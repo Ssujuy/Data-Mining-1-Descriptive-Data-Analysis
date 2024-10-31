@@ -466,8 +466,8 @@ print(neighbourhood_categories)
 
 ![AvgPerNeighb2019](images/AvgPerNeighb2019.png)
 ![AvgPerNeighbTable2019](images/AvgPerNeighbTable2019.png)
+![AvgPerNeighb2023](images/AvgPerNeighb2023.png)
 ![AvgPerNeighbTable2023](images/AvgPerNeighbTable2023.png)
-![distAmenities2023](images/distAmenities2023.png)
 
 
 ### 1.13 Three Additional Questions for Athens
