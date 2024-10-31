@@ -476,6 +476,77 @@ This part of the notebook explores three specific questions about listings in At
 2. Do hosts with verified identities and profile pictures receive better ratings or more bookings?
 3. What is the relationship between the instant bookable feature and the review score?
 
+```python
+neighbourhood_data = year2023.groupby('neighbourhood_cleansed').agg({
+    'review_scores_rating': 'mean',
+    'number_of_reviews': 'sum'
+}).reset_index()
+
+correlation = neighbourhood_data[['number_of_reviews', 'review_scores_rating']].corr().iloc[0, 1]
+
+plt.figure(figsize=(14, 10))
+sns.scatterplot(data=neighbourhood_data, x='number_of_reviews', y='review_scores_rating', hue='neighbourhood_cleansed', palette='viridis', s=100, alpha=0.6, edgecolor='w', legend=None)
+plt.title('Review Scores and Number of Reviews Across Neighbourhoods in Athens', fontsize=16)
+plt.xlabel('Number of Reviews', fontsize=14)
+plt.ylabel('Average Review Score', fontsize=14)
+plt.grid(True)
+plt.tight_layout()
+
+for line in range(0, neighbourhood_data.shape[0]):
+    plt.text(neighbourhood_data.number_of_reviews[line], neighbourhood_data.review_scores_rating[line],
+             neighbourhood_data.neighbourhood_cleansed[line], horizontalalignment='left', size='small', color='black', weight='semibold')
+
+plt.show()
+```
+
+![scatterReviewScores2019](images/scatterReviewScores2019.png)
+
+```python
+identity_group = year2023.groupby('host_identity_verified')['number_of_reviews'].mean().reset_index()
+identity_group['host_identity_verified'] = identity_group['host_identity_verified'].replace({'f': 'False', 't': 'True'})
+
+profile_pic_group = year2023.groupby('host_has_profile_pic')['number_of_reviews'].mean().reset_index()
+profile_pic_group['host_has_profile_pic'] = profile_pic_group['host_has_profile_pic'].replace({'f': 'False', 't': 'True'})
+
+plt.figure(figsize=(10, 6))
+
+plt.subplot(1, 2, 1)
+sns.barplot(data=identity_group, x='host_identity_verified', y='number_of_reviews', hue='host_identity_verified', palette='inferno', dodge=False, legend=False)
+plt.title('Average Number of Reviews by Host Identity Verification')
+plt.xlabel('Host Identity Verified')
+plt.ylabel('Average Number of Reviews')
+plt.ylim(0, identity_group['number_of_reviews'].max() + 5)
+
+plt.subplot(1, 2, 2)
+sns.barplot(data=profile_pic_group, x='host_has_profile_pic', y='number_of_reviews', hue='host_has_profile_pic', palette='inferno', dodge=False, legend=False)
+plt.title('Average Number of Reviews by Host Profile Picture Presence')
+plt.xlabel('Host Has Profile Picture')
+plt.ylabel('Average Number of Reviews')
+plt.ylim(0, profile_pic_group['number_of_reviews'].max() + 5)
+
+plt.tight_layout()
+plt.show()
+```
+
+![reviewsHostVerHostPicture](images/reviewsHostVerHostPicture.png)
+
+```python
+instant_bookable_group = year2023.groupby('instant_bookable')['review_scores_rating'].mean().reset_index()
+instant_bookable_group['instant_bookable'] = instant_bookable_group['instant_bookable'].replace({'f': 'False', 't': 'True'})
+
+plt.figure(figsize=(10, 6))
+
+plt.subplot(1, 2, 1)
+sns.barplot(data=instant_bookable_group, x='instant_bookable', y='review_scores_rating', hue='instant_bookable', palette='inferno', dodge=False, legend=False)
+plt.title('Average Review Score by Instant Bookable Feature', fontsize=14)
+plt.xlabel('Instant Bookable')
+plt.ylabel('Average Review Score')
+plt.ylim(0, 5)
+plt.show()
+```
+
+![reviewScoreBookable](images/reviewScoreBookable.png)
+
 ### 1.14 Top 10 Hosts with Most Listings
 The top 10 hosts with the most listings are identified. This analysis helps in understanding the most active or influential hosts in the market.
 
