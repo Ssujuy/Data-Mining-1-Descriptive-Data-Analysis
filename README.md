@@ -403,8 +403,72 @@ generate_wordcloud(last_review_text, 'Last Review WordCloud')
 ### 1.11 Distribution of Simplified Amenities Categories
 This section looks at the amenities offered by listings, grouping them into simplified categories, and analyzing the distribution. It provides an understanding of which amenities are most frequently offered.
 
+```python
+year2019['amenities_category'] = 'Other'
+
+categories = {
+    'kitchen': ['Breakfast', 'Cooking basics', 'BBQ', 'grill', 'oven', 'Coffee maker'],
+    'accessibility': ['Accessible-height bed', 'Accessible-height toilet', 'Wide doorway', 'Wide hallway clearance'],
+    'Electricity_and_Technology': ['EV charger', 'Ethernet connection', 'Game console', 'Projector and screen'],
+    'facilities': ['Private entrance', 'Private living room', 'Lock on bedroom door', 'Outlet covers', 'Window guards'],
+    'kids_friendly': ['Baby bath', 'Baby monitor', 'Changing table', 'Children’s books and toys', 'High chair'],
+    'security': ['Security cameras', 'Fire extinguisher', 'First aid kit', 'Safety card', 'Smoke detector'],
+    'services': ['Self check-in', 'Luggage dropoff allowed', 'Long term stays allowed', 'Pets allowed']
+}
+
+for category, items in categories.items():
+    year2019.loc[year2019['amenities'].str.contains('|'.join(items)), 'amenities_category'] = category
+print(year2019['amenities_category'].unique())
+
+plt.figure(figsize=(10, 6))
+sns.countplot(data=year2019, x='amenities_category', palette='Set2')
+plt.title('Distribution of Simplified Amenities Categories')
+plt.xlabel('Amenities Category')
+plt.ylabel('Count')
+plt.xticks(rotation=45)
+plt.tight_layout()
+plt.show()
+```
+
+![distAmenities2019](images/distAmenities2019.png)
+![distAmenities2023](images/distAmenities2023.png)
+
 ### 1.12 Mean for 2 People Room per Neighbourhood
 Here, the mean price for a two-person room in each neighborhood is calculated and analyzed, giving insight into pricing patterns across areas.
+
+```python
+filtered_rooms = year2019[year2019['accommodates'] == 2]
+
+mean_price_per_neighbourhood = filtered_rooms.groupby('neighbourhood')['price'].mean().sort_values()
+
+plt.figure(figsize=(16, 12))
+mean_price_per_neighbourhood.plot(kind='barh', color='skyblue')
+plt.xlabel('Mean Price')
+plt.ylabel('Neighbourhood')
+plt.title('Mean Price per Neighbourhood')
+plt.show()
+
+q1 = mean_price_per_neighbourhood.quantile(0.25)
+q3 = mean_price_per_neighbourhood.quantile(0.75)
+
+def categorize_neighbourhood(price):
+    if price < q1:
+        return 'Οικονομικές'
+    elif price < q3:
+        return 'Μέτριες'
+    else:
+        return 'Πολύ Ακριβές'
+
+neighbourhood_categories = mean_price_per_neighbourhood.apply(categorize_neighbourhood)
+
+print(neighbourhood_categories)
+```
+
+![AvgPerNeighb2019](images/AvgPerNeighb2019.png)
+![AvgPerNeighbTable2019](images/AvgPerNeighbTable2019.png)
+![AvgPerNeighbTable2023](images/AvgPerNeighbTable2023.png)
+![distAmenities2023](images/distAmenities2023.png)
+
 
 ### 1.13 Three Additional Questions for Athens
 This part of the notebook explores three specific questions about listings in Athens:
