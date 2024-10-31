@@ -610,7 +610,7 @@ plt.grid(True)
 plt.show()
 ```
 
-
+![dimVector](images/dimVector.png)
 
 ### Cosine Similarity
 Once the text data is vectorized, cosine similarity is used to calculate the similarity between different texts. This method helps in finding similar listings based on textual information.
