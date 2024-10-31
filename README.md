@@ -185,6 +185,9 @@ plt.show()
 ![MostFrequentRoom2019](images/MostFrequentRoom2019.png)
 ![MostFrequentRoom2023](images/MostFrequentRoom2023.png)
 
+### 1.2 Price Graph per month
+Calculate mean price per month and display results in bar diagram
+
 ### 1.3 Top 5 Neighbourhoods with Most Reviews
 In this step, the top 5 neighborhoods that received the most reviews are identified. This helps in understanding the most active or popular neighborhoods in terms of user feedback and interaction.
 
