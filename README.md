@@ -70,6 +70,8 @@ year2019 = year2019[columns_to_keep]
 year2019.to_csv('output/train_2019.csv', index=False)
 ```
 
+![RowsPerMonth](images/RowsPerMonth.png)
+
 ### 2019 Post Processing
 
 This segment handles post-processing of the 2019 dataset. It includes steps like handling missing values, feature extraction, and data cleaning to prepare the dataset for further analysis. Each column in the dataset is examined, and irrelevant data is either removed or transformed into a useful format.
@@ -188,11 +190,20 @@ plt.show()
 ### 1.2 Price Graph per month
 Calculate mean price per month and display results in bar diagram
 
+![AvgPricePerMonth2019](images/AvgPricePerMonth2019.png)
+![AvgPricePerMonth2023](images/AvgPricePerMonth2023.png)
+
 ### 1.3 Top 5 Neighbourhoods with Most Reviews
 In this step, the top 5 neighborhoods that received the most reviews are identified. This helps in understanding the most active or popular neighborhoods in terms of user feedback and interaction.
 
+![5NeighbMostReviews2019](images/5NeighbMostReviews2019.png)
+![5NeighbMostReviews2023](images/5NeighbMostReviews2023.png)
+
 ### 1.4 Neighbourhood with Most Entries
 This section finds the neighborhood that has the highest number of listings. It can indicate the area with the most rental activity or popularity.
+
+![NeighbMostEntries2019](images/NeighbMostEntries2019.png)
+![NeighbMostEntries2023](images/NeighbMostEntries2023.png)
 
 ### 1.5 Entities per Month and per Neighbourhood
 The data is analyzed to check how many entities (listings) are created or active per month and per neighborhood. This can give an idea of seasonal trends or neighborhood popularity over time.
