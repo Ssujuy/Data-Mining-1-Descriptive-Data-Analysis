@@ -190,17 +190,68 @@ plt.show()
 ### 1.2 Price Graph per month
 Calculate mean price per month and display results in bar diagram
 
+```python
+monthly_prices_2019 = year2019.groupby('month')['price'].mean().reset_index()
+
+plt.figure(figsize=(6, 6))
+plt.bar(monthly_prices_2019['month'], monthly_prices_2019['price'], color='skyblue')
+plt.xlabel('Month')
+plt.ylabel('Average Price')
+plt.title('Average Price Variation Over 3 Months')
+
+for i, price in enumerate(monthly_prices_2019['price']):
+    plt.text(i, price + 0.5, f'{price:.2f}', ha='center', va='bottom')
+
+plt.ylim(bottom=0)
+plt.tight_layout()
+plt.show()
+```
+
 ![AvgPricePerMonth2019](images/AvgPricePerMonth2019.png)
 ![AvgPricePerMonth2023](images/AvgPricePerMonth2023.png)
 
 ### 1.3 Top 5 Neighbourhoods with Most Reviews
 In this step, the top 5 neighborhoods that received the most reviews are identified. This helps in understanding the most active or popular neighborhoods in terms of user feedback and interaction.
 
+```python
+neighborhood_review_counts = year2019.groupby('neighbourhood_cleansed')['number_of_reviews'].sum()
+
+top_5 = neighborhood_review_counts.nlargest(5)
+
+print(top_5)
+
+plt.figure(figsize=(10, 6))
+top_5.plot(kind='bar', color='skyblue')
+plt.xlabel('Neighborhood')
+plt.ylabel('Number of Reviews')
+plt.title('Top 5 Neighborhoods with the Most Reviews 2019')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+```
+
 ![5NeighbMostReviews2019](images/5NeighbMostReviews2019.png)
 ![5NeighbMostReviews2023](images/5NeighbMostReviews2023.png)
 
 ### 1.4 Neighbourhood with Most Entries
 This section finds the neighborhood that has the highest number of listings. It can indicate the area with the most rental activity or popularity.
+
+```python
+neighbourhood_2019_count = year2019['neighbourhood_cleansed'].value_counts()
+
+max_neighbourhood_2019 = neighbourhood_2019_count.idxmax()
+max_count_2019 = neighbourhood_2019_count.max()
+
+data_2019 = {
+    "Neighbourhood": [max_neighbourhood_2019],
+    "Entries": [max_count_2019],
+    "Year": [2019]
+}
+
+df_2019 = pd.DataFrame(data_2019)
+
+print(df_2019)
+```
 
 ![NeighbMostEntries2019](images/NeighbMostEntries2019.png)
 ![NeighbMostEntries2023](images/NeighbMostEntries2023.png)
