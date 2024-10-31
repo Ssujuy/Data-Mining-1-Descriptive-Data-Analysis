@@ -46,11 +46,84 @@ Here, the datasets from the Airbnb listings in different months of 2019 and 2023
 ### Merge Datasets per Year
 The individual monthly datasets for each year (2019 and 2023) are merged into single datasets. This allows easier data processing, ensuring that all listings from various months in a year are available in one unified dataset.
 
+```python
+april_2019['month']='april'
+february_2019['month']='february'
+march_2019['month']='march'
+
+columns_to_keep = [
+    'id', 'zipcode', 'transit', 'bedrooms', 'beds', 'review_scores_rating',
+    'number_of_reviews', 'neighbourhood', 'neighbourhood_cleansed', 'name', 'latitude', 'longitude',
+    'last_review', 'instant_bookable', 'host_since', 'host_response_rate',
+    'host_identity_verified', 'host_has_profile_pic', 'first_review',
+    'description', 'city', 'cancellation_policy', 'bed_type', 'bathrooms',
+    'accommodates', 'amenities', 'room_type', 'property_type', 'price',
+    'availability_365', 'minimum_nights', 'month', 'host_id'
+]
+
+year2019 = pd.concat([april_2019, february_2019, march_2019])
+
+year2019.reset_index(drop=True, inplace=True)
+
+year2019 = year2019[columns_to_keep]
+
+year2019.to_csv('output/train_2019.csv', index=False)
+```
+
 ### 2019 Post Processing
+
 This segment handles post-processing of the 2019 dataset. It includes steps like handling missing values, feature extraction, and data cleaning to prepare the dataset for further analysis. Each column in the dataset is examined, and irrelevant data is either removed or transformed into a useful format.
+
+```python
+april_2019['month']='april'
+february_2019['month']='february'
+march_2019['month']='march'
+
+columns_to_keep = [
+    'id', 'zipcode', 'transit', 'bedrooms', 'beds', 'review_scores_rating',
+    'number_of_reviews', 'neighbourhood', 'neighbourhood_cleansed', 'name', 'latitude', 'longitude',
+    'last_review', 'instant_bookable', 'host_since', 'host_response_rate',
+    'host_identity_verified', 'host_has_profile_pic', 'first_review',
+    'description', 'city', 'cancellation_policy', 'bed_type', 'bathrooms',
+    'accommodates', 'amenities', 'room_type', 'property_type', 'price',
+    'availability_365', 'minimum_nights', 'month', 'host_id'
+]
+
+year2019 = pd.concat([april_2019, february_2019, march_2019])
+
+year2019.reset_index(drop=True, inplace=True)
+
+year2019 = year2019[columns_to_keep]
+
+year2019.to_csv('output/train_2019.csv', index=False)
+```
 
 ### 2023 Post Processing
 Similar to the 2019 post-processing step, this section involves cleaning and extracting important features from the 2023 dataset. Data is cleaned by addressing missing values and performing operations such as data normalization or transformation for consistency.
+
+```python
+september_2023['month']='september'
+march_2023['month']='march'
+june_2023['month']='june'
+
+columns_to_keep = [
+    'id', 'bedrooms', 'beds', 'review_scores_rating',
+    'number_of_reviews', 'neighbourhood', 'neighbourhood_cleansed', 'name', 'latitude', 'longitude',
+    'last_review', 'instant_bookable', 'host_since', 'host_response_rate',
+    'host_identity_verified', 'host_has_profile_pic', 'first_review',
+    'description', 'bathrooms',
+    'accommodates', 'amenities', 'room_type', 'property_type', 'price',
+    'availability_365', 'minimum_nights', 'month', 'host_id'
+]
+
+year2023 = pd.concat([september_2023, march_2023, june_2023])
+
+year2023.reset_index(drop=True, inplace=True)
+
+year2023 = year2023[columns_to_keep]
+
+year2023.to_csv('output/train_2023.csv', index=False)
+```
 
 ## Null Values
 
@@ -65,8 +138,28 @@ Similar to the 2019 dataset, the 2023 dataset is examined for null values. The m
 ### Cleanup 2019
 This step involves the actual cleaning of the 2019 dataset. Missing or erroneous values are handled by either imputing, filling with default values, or removing unnecessary columns. The goal is to create a clean, ready-to-analyze dataset.
 
+```python
+year2019_important=['id', 'name', 'latitude', 'longitude', 'host_identity_verified', 'cancellation_policy', 'property_type', 'price' , 'city', 'neighbourhood']
+
+year2019 = year2019.dropna(subset=year2019_important)
+
+null_values = year2019.isnull().sum()
+
+print('Null values in 2019', null_values)
+```
+
 ### Cleanup 2023
 As with 2019, the 2023 dataset undergoes a similar cleaning process to remove or handle missing values, prepare the data, and ensure that all features are in the correct format for further analysis.
+
+```python
+year2023_important=['id', 'name', 'latitude', 'longitude', 'host_identity_verified', 'property_type', 'price', 'neighbourhood']
+
+year2023 = year2023.dropna(subset=year2023_important)
+
+null_values = year2023.isnull().sum()
+
+print('Null values in 2023', null_values)
+```
 
 ## Price to Float
 The price column in both datasets (2019 and 2023) is stored as a string with symbols (e.g., dollar signs). In this step, the price is converted into a numeric format, specifically a floating-point number, so that mathematical operations and comparisons can be performed.
@@ -75,6 +168,22 @@ The price column in both datasets (2019 and 2023) is stored as a string with sym
 
 ### 1.1 Most Frequent Room Type
 This section identifies the most common or frequent room type in both the 2019 and 2023 datasets. The analysis gives insight into which type of accommodation is most popular.
+
+```python
+room_type_counts = year2019['room_type'].value_counts()
+
+plt.figure(figsize=(8, 6))
+room_type_counts.plot(kind='bar', color='green')
+plt.xlabel('Room Type')
+plt.ylabel('Frequency')
+plt.title('Frequency of Room Types')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+```
+
+![MostFrequentRoom2019](images/MostFrequentRoom2019.png)
+![MostFrequentRoom2023](images/MostFrequentRoom2023.png)
 
 ### 1.3 Top 5 Neighbourhoods with Most Reviews
 In this step, the top 5 neighborhoods that received the most reviews are identified. This helps in understanding the most active or popular neighborhoods in terms of user feedback and interaction.
