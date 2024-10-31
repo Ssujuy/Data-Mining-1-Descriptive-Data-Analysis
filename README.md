@@ -290,17 +290,109 @@ plt.show()
 ### 1.6 Histogram of Neighbourhood
 A histogram is generated to visualize the distribution of listings across different neighborhoods. This visualization helps in understanding how the listings are spread geographically.
 
+```python
+neighbourhood_counts = year2019['neighbourhood_cleansed'].value_counts()
+
+plt.figure(figsize=(20, 8))
+neighbourhood_counts.plot(kind='bar', color='skyblue')
+
+for i, count in enumerate(neighbourhood_counts):
+    plt.text(i, count, str(count), ha='center', va='bottom')
+
+plt.title('Histogram of Neighborhoods - 2019')
+plt.xlabel('Neighborhood')
+plt.ylabel('Count')
+plt.xticks(rotation=90)
+plt.tight_layout()
+plt.show()
+```
+
+![neighbHistograms2019](images/neighbHistograms2019.png)
+![neighbHistograms2023](images/neighbHistograms2023.png)
+
 ### 1.7 Most Frequent Room Type per Neighbourhood
 This analysis dives deeper by identifying the most common room type in each neighborhood. It provides a breakdown of the preferred types of accommodations across different areas.
+
+```python
+room_type_counts = year2019.groupby(['neighbourhood_cleansed', 'room_type']).size().reset_index(name='count')
+plt.figure(figsize=(16, 12))
+sns.barplot(data=room_type_counts, x='neighbourhood_cleansed', y='count', hue='room_type')
+plt.title('Frequency of Room Types in Each Neighborhood')
+plt.xlabel('Neighborhood')
+plt.ylabel('Frequency')
+plt.xticks(rotation=90, ha='right')
+plt.legend(title='Room Type', bbox_to_anchor=(1, 1))
+plt.tight_layout()
+plt.show()
+```
+
+![FreqRoomNeighb2019](images/FreqRoomNeighb2019.png)
+![FreqRoomNeighb2023](images/FreqRoomNeighb2023.png)
 
 ### 1.8 Most Expensive Room Type
 This section identifies which room type is the most expensive in terms of listing price. It offers insight into the high-end market and which types of accommodations attract the highest prices.
 
+```python
+room_type_prices = year2019.groupby('room_type')['price'].mean().round(2)
+max_room_type_price = room_type_prices.idxmax()
+highest_mean_price = room_type_prices.max()
+
+room_type_prices_df = room_type_prices.reset_index()
+room_type_prices_df.columns = ['Room Type', 'Mean Price']
+
+max_price_room_type_df = room_type_prices_df[room_type_prices_df['Room Type'] == max_room_type_price]
+
+print("Room Type with Maximum Mean Price:")
+print(max_price_room_type_df)
+```
+
+![AvgRoom2019](images/AvgRoom2019.png)
+![AvgRoom2023](images/AvgRoom2023.png)
+
 ### 1.9 Map with Mean Coordinates
 A map is generated using the mean coordinates of listings in each neighborhood, providing a geographical overview of where listings are concentrated.
 
+```python
+month_data = year2023[year2023['month'] == 'march']
+
+map = folium.Map(location=[month_data['latitude'].mean(), month_data['longitude'].mean()], zoom_start=10)
+
+for index, row in month_data.iterrows():
+    if 'transit' in row:
+        popup_text = f"<b>{row['name']}</b><br>Room Type: {row['room_type']}<br>Transit: {row['transit']}"
+    else:
+        popup_text = f"<b>{row['name']}</b><br>Room Type: {row['room_type']}"
+    folium.Marker(location=[row['latitude'], row['longitude']], popup=popup_text).add_to(map)
+
+map.save('properties_map.html')
+```
+
 ### 1.10 Wordcloud for Neighbourhood, Transit, Description, Last Review
 Wordclouds are generated for textual data in the datasets, such as neighborhood descriptions, transit information, and reviews. This helps visualize the most common words or phrases associated with these categories.
+
+```python
+def generate_wordcloud(data, title):
+    data = data.split(' ')
+    word_freq = Counter(data)
+    wordcloud = WordCloud(width=800, height=400, background_color='white').generate_from_frequencies(word_freq)
+    plt.figure(figsize=(10, 6))
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.title(title)
+    plt.axis('off')
+    plt.show()
+
+neighbourhood_text = ' '.join(year2019['neighbourhood_cleansed'].dropna().astype(str))
+generate_wordcloud(neighbourhood_text, 'Neighbourhood WordCloud')
+
+transit_text = ' '.join(year2019['transit'].dropna().astype(str))
+generate_wordcloud(transit_text, 'Transit WordCloud')
+
+description_text = ' '.join(year2019['description'].dropna().astype(str))
+generate_wordcloud(description_text, 'Description WordCloud')
+
+last_review_text = ' '.join(pd.to_datetime(year2019['last_review'].dropna().astype(str)).dt.strftime('%B'))
+generate_wordcloud(last_review_text, 'Last Review WordCloud')
+```
 
 ### 1.11 Distribution of Simplified Amenities Categories
 This section looks at the amenities offered by listings, grouping them into simplified categories, and analyzing the distribution. It provides an understanding of which amenities are most frequently offered.
