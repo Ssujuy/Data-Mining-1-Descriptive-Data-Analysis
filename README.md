@@ -259,6 +259,34 @@ print(df_2019)
 ### 1.5 Entities per Month and per Neighbourhood
 The data is analyzed to check how many entities (listings) are created or active per month and per neighborhood. This can give an idea of seasonal trends or neighborhood popularity over time.
 
+```python
+entries_per_month_and_neighbourhood = year2019.groupby(['month', 'neighbourhood_cleansed']).size().reset_index(name='entries_count')
+sorted_entries = entries_per_month_and_neighbourhood.sort_values(by='entries_count', ascending=False)
+print(sorted_entries)
+
+plt.figure(figsize=(15, 20))
+heatmap_data = sorted_entries.pivot(index="neighbourhood_cleansed",columns="month",values="entries_count")
+
+sns.heatmap(heatmap_data, cmap="Blues", annot=True, fmt="d", linewidths=.5, cbar_kws={'label': 'Entries Count'})
+
+plt.title("Number of Entries per Month and Neighbourhood", fontsize=16)
+plt.xlabel("Month", fontsize=14)
+plt.ylabel("Neighbourhood", fontsize=14)
+plt.xticks(rotation=45, ha='right', fontsize=12)
+plt.yticks(fontsize=10)
+
+plt.tight_layout(pad=3)
+plt.show()
+```
+
+![entitiesPerMonth2019](images/entitiesPerMonth2019.png)
+![entitiesPerMonthGraph2019](images/entitiesPerMonthGraph2019.png)
+![entitiesPerMonthGraph_2_2019](images/entitiesPerMonthGraph_2_2019.png)
+
+![entitiesPerMonth2023](images/entitiesPerMonth2023.png)
+![entitiesPerMonthGraph2023](images/entitiesPerMonthGraph2023.png)
+![entitiesPerMonthGraph_2_2023](images/entitiesPerMonthGraph_2_2023.png)
+
 ### 1.6 Histogram of Neighbourhood
 A histogram is generated to visualize the distribution of listings across different neighborhoods. This visualization helps in understanding how the listings are spread geographically.
 
