@@ -586,8 +586,107 @@ This section summarizes the conclusions drawn from the data mining process, base
 ### TF-IDF Vectorization
 In this section, the text data (e.g., reviews, descriptions) is processed using TF-IDF vectorization to represent textual information in numerical format. This is essential for further analysis, especially for calculating similarities between texts.
 
+- Initializes TF-IDF vectorizers for unigrams and bigrams with English stopwords removal.
+- Transforms the recommendation dataset's index using both unigram and bigram vectorizers.
+- Plots the dimensions of the vectorization space, including the number of documents, unigrams, and bigrams.
+
+```python
+unigram_vectorizer = TfidfVectorizer(ngram_range=(1, 1), stop_words='english')
+
+bigram_vectorizer = TfidfVectorizer(ngram_range=(2, 2), stop_words='english')
+unigram_matrix = unigram_vectorizer.fit_transform(recommendation_dataset['index'])
+
+bigram_matrix = bigram_vectorizer.fit_transform(recommendation_dataset['index'])
+x = ['documents', 'unigrams', 'bigrams']
+y = [unigram_matrix.shape[0], unigram_matrix.shape[1],  bigram_matrix.shape[1]]
+
+plt.scatter(x, y)
+
+plt.xlabel('Size')
+plt.ylabel('n-grams')
+plt.title('Dimensions of the vectorization space')
+
+plt.grid(True)
+plt.show()
+```
+
+
+
 ### Cosine Similarity
 Once the text data is vectorized, cosine similarity is used to calculate the similarity between different texts. This method helps in finding similar listings based on textual information.
 
+- Computes cosine similarity matrices for unigrams and bigrams.
+- Prints the shape of the computed distance matrices.
+- Samples a portion of the distance matrix for further processing.
+- Makes the diagonal -inf , in order to not consider duplicate data.
+- Iterates to find the most similar documents based on cosine similarity.
+- Prints the index and similarity score of the most similar document pairs.
+
+```python
+unigram_distance_matrix = cosine_similarity(unigram_matrix)
+
+bigram_distance_matrix = cosine_similarity(bigram_matrix)
+
+print(unigram_distance_matrix.shape)
+
+print(bigram_distance_matrix.shape)
+
+sample = np.copy(unigram_distance_matrix[:1000,:1000])
+
+np.fill_diagonal(sample, np.NINF)
+
+result = {}
+for _ in range(100):
+    max_index = np.unravel_index(np.argmax(sample), sample.shape)
+    max_value = sample[max_index]
+
+    sample[max_index[0], max_index[1]] = np.NINF
+    sample[max_index[1], max_index[0]] = np.NINF
+
+    result[max_index] = max_value
+
+    print("index: " , max_index, " similarity: " , round(max_value,7))
+```
+
 ### Recommendation System
 Using the vectorized data and similarity measures, a recommendation system is built. The system suggests listings to users based on similarities in features or textual descriptions.
+
+- Identifies the index of the listing with ID 1479754 in the recommendation dataset.
+- Prepares the query based on the identified listing index.
+- Defines a function to recommend similar listings based on a given listing ID.
+- Finds similar listings by iterating over the cosine similarity matrix and printing the most similar listings along with their similarity scores.
+
+```python
+listing_id = 1479754
+
+listing_index = recommendation_dataset.loc[recommendation_dataset['id'] == listing_id].index[0]
+
+query = recommendation_dataset.loc[listing_index]
+
+print(query)
+
+print('-------------------------------------------------------------')
+
+def recommend(listing_id, num = 5):
+    listing_index = recommendation_dataset.loc[recommendation_dataset['id'] == listing_id].index[0]
+
+    sample = np.copy(unigram_distance_matrix[listing_index])
+
+    for i in range(num + 1):
+        max_index = np.unravel_index(np.argmax(sample), sample.shape)
+        max_value = sample[max_index]
+
+        sample[max_index] = np.NINF
+
+        if i == 0:
+            continue
+
+        print('-------------------------------------------------------------')
+        print(f"Hit {i}: {max_value:.7f} - listing index: {max_index[0]} ")
+
+        room = recommendation_dataset.loc[max_index]
+
+        print(room)
+
+recommend(listing_id, 5)
+```
