@@ -550,8 +550,36 @@ plt.show()
 ### 1.14 Top 10 Hosts with Most Listings
 The top 10 hosts with the most listings are identified. This analysis helps in understanding the most active or influential hosts in the market.
 
+```python
+host_listings_count = year2019['host_id'].value_counts()
+
+sorted_hosts = host_listings_count.sort_values(ascending=False)
+
+top_10_hosts = sorted_hosts.head(10)
+
+labels = top_10_hosts.index
+sizes = top_10_hosts.values
+
+plt.figure(figsize=(8, 8))
+plt.pie(sizes, labels=labels, autopct='%1.1f%%', startangle=140)
+plt.title('Top 10 Hosts by Number of Listings in 2019')
+plt.axis('equal')
+
+plt.show()
+```
+
+![pie10Hosts2019](images/pie10Hosts2019.png)
+![pie10Hosts2023](images/pie10Hosts2023.png)
+
 ### 1.15 Conclusions
 This section summarizes the conclusions drawn from the data mining process, based on the insights generated from the analysis of both 2019 and 2023 datasets.
+
+- (1.1) Most frequent room type seems to remain the same for both years
+- (1.2) All 3 months have increased mean prices for year 2023
+- (1.8) The most expensive room type in year 2023 is valued at mean price 316.17 in comparison with 81.06
+- Neighbourhood 'ΕΜΠΟΡΙΚΟ ΤΡΙΓΩΝΟ ΠΛΑΚΑ', appears to be the most frequently listed for both years
+- The most frequent room type 'entire home/apt' remained the same for both years
+- The entries appear to be way more in year 2019 than 2023
 
 ## Part 2 - Recommendation System
 
