@@ -394,6 +394,12 @@ last_review_text = ' '.join(pd.to_datetime(year2019['last_review'].dropna().asty
 generate_wordcloud(last_review_text, 'Last Review WordCloud')
 ```
 
+![neighbWordcloud2019](images/neighbWordcloud2019.png)
+![transitWordcloud2019](images/transitWordcloud2019.png)
+![descriptionwordcloud2019](images/descriptionwordcloud2019.png)
+![lastReviewWordcloud2019](images/lastReviewWordcloud2019.png)
+
+
 ### 1.11 Distribution of Simplified Amenities Categories
 This section looks at the amenities offered by listings, grouping them into simplified categories, and analyzing the distribution. It provides an understanding of which amenities are most frequently offered.
 
